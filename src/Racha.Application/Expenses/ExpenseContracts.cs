@@ -1,3 +1,5 @@
+using Racha.Domain.Expenses;
+
 namespace Racha.Application.Expenses;
 
 /// <summary>Used for both creating and updating an expense.</summary>
@@ -12,4 +14,22 @@ public sealed record ExpenseDto(
     decimal Amount,
     DateOnly Date,
     Guid PaidByUserId,
-    IReadOnlyList<ExpenseShareDto> Shares);
+    IReadOnlyList<ExpenseShareDto> Shares)
+{
+    public static ExpenseDto From(Expense expense)
+    {
+        ArgumentNullException.ThrowIfNull(expense);
+
+        return new ExpenseDto(
+            expense.Id,
+            expense.GroupId,
+            expense.Description,
+            expense.Amount,
+            expense.Date,
+            expense.PaidByUserId,
+            expense.Shares
+                .OrderBy(s => s.UserId)
+                .Select(s => new ExpenseShareDto(s.UserId, s.Amount))
+                .ToList());
+    }
+}
