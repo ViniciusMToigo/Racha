@@ -19,15 +19,33 @@ public sealed class Group : Entity
     public IReadOnlyCollection<GroupMember> Members => _members.AsReadOnly();
 
     /// <summary>Creates a group. The creator automatically becomes its first member.</summary>
-    public static Group Create(string name, Guid createdByUserId) =>
-        throw new NotImplementedException();
+    public static Group Create(string name, Guid createdByUserId)
+    {
+        var group = new Group
+        {
+            Name = Guard.RequiredText(name, MaxNameLength, "group name"),
+            CreatedByUserId = Guard.RequiredId(createdByUserId, "group creator"),
+        };
+
+        group.AddMember(createdByUserId);
+        return group;
+    }
 
     public void Rename(string name) =>
-        throw new NotImplementedException();
+        Name = Guard.RequiredText(name, MaxNameLength, "group name");
 
-    public void AddMember(Guid userId) =>
-        throw new NotImplementedException();
+    public void AddMember(Guid userId)
+    {
+        Guard.RequiredId(userId, "member");
+
+        if (IsMember(userId))
+        {
+            throw new DomainException("The user is already a member of this group.");
+        }
+
+        _members.Add(new GroupMember(Id, userId));
+    }
 
     public bool IsMember(Guid userId) =>
-        throw new NotImplementedException();
+        _members.Exists(m => m.UserId == userId);
 }
