@@ -1,0 +1,85 @@
+:host {
+  display: block;
+  padding-top: 16px;
+}
+
+section + section {
+  margin-top: 24px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font: var(--mat-sys-title-medium);
+}
+
+ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.transfer,
+.balance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+}
+
+.transfer {
+  background: var(--mat-sys-surface-container-low);
+
+  .arrow {
+    display: flex;
+    color: var(--mat-sys-primary);
+  }
+}
+
+.person {
+  font: var(--mat-sys-title-small);
+}
+
+.amount {
+  margin-left: auto;
+  font: var(--mat-sys-body-large);
+}
+
+.balance {
+  &.owed .amount {
+    color: #1b7f3b;
+  }
+
+  &.owes .amount {
+    color: var(--mat-sys-error);
+  }
+
+  &.settled .amount {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.settled-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #1b7f3b;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -1,0 +1,20 @@
+<mat-toolbar class="toolbar">
+  <a class="brand" routerLink="/groups" aria-label="Racha home">
+    <mat-icon aria-hidden="true">payments</mat-icon>
+    <span>Racha</span>
+  </a>
+
+  <span class="spacer"></span>
+
+  @if (auth.currentUser(); as user) {
+    <span class="user-name">{{ user.name }}</span>
+    <button mat-button type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Log out
+    </button>
+  }
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet />
+</main>

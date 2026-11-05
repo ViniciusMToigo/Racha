@@ -1,0 +1,61 @@
+<div class="toolbar">
+  <div class="total">
+    <span class="label">Total spent</span>
+    <span class="value">{{ total() | currency: 'BRL' }}</span>
+  </div>
+  <button mat-flat-button type="button" (click)="add()">
+    <mat-icon>add</mat-icon>
+    Add expense
+  </button>
+</div>
+
+@if (expenses.isLoading() && !expenses.hasValue()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Loading expenses" />
+} @else if (expenses.error()) {
+  <p class="state-message error" role="alert">{{ errorMessage(expenses.error()) }}</p>
+  <button mat-button type="button" (click)="expenses.reload()">Try again</button>
+} @else if (expenses.hasValue()) {
+  @if (expenses.value().length === 0) {
+    <div class="state-message">
+      <mat-icon aria-hidden="true">receipt_long</mat-icon>
+      <p>No expenses yet. Add the first one!</p>
+    </div>
+  } @else {
+    <ul class="expense-list">
+      @for (expense of expenses.value(); track expense.id) {
+        <li class="expense">
+          <div class="info">
+            <span class="description">{{ expense.description }}</span>
+            <span class="meta">
+              {{ expense.date | date: 'mediumDate' }} · Paid by {{ payerName(expense) }}
+            </span>
+          </div>
+          <div class="amounts">
+            <span class="amount">{{ expense.amount | currency: 'BRL' }}</span>
+            <span class="share">Your share: {{ myShare(expense) | currency: 'BRL' }}</span>
+          </div>
+          <div class="actions">
+            <button
+              mat-icon-button
+              type="button"
+              (click)="edit(expense)"
+              matTooltip="Edit"
+              [attr.aria-label]="'Edit ' + expense.description"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              type="button"
+              (click)="remove(expense)"
+              matTooltip="Delete"
+              [attr.aria-label]="'Delete ' + expense.description"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

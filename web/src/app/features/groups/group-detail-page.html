@@ -1,0 +1,64 @@
+<a mat-button routerLink="/groups" class="back-link">
+  <mat-icon>arrow_back</mat-icon>
+  My groups
+</a>
+
+@if (group.isLoading() && !group.hasValue()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Loading group" />
+} @else if (notFound()) {
+  <div class="state-message">
+    <mat-icon aria-hidden="true">search_off</mat-icon>
+    <p>This group doesn't exist or you're not a member of it.</p>
+  </div>
+} @else if (group.error()) {
+  <p class="state-message error" role="alert">{{ errorMessage(group.error()) }}</p>
+} @else if (group.hasValue()) {
+  @let current = group.value();
+
+  <header class="page-header">
+    <div>
+      <h1>{{ current.name }}</h1>
+      <p>{{ current.members.length }} {{ current.members.length === 1 ? 'member' : 'members' }}</p>
+    </div>
+
+    @if (isCreator()) {
+      <button
+        mat-icon-button
+        type="button"
+        [matMenuTriggerFor]="groupMenu"
+        aria-label="Group options"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #groupMenu="matMenu">
+        <button mat-menu-item type="button" (click)="rename(current)">
+          <mat-icon>edit</mat-icon>
+          <span>Rename</span>
+        </button>
+        <button mat-menu-item type="button" (click)="delete(current)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete group</span>
+        </button>
+      </mat-menu>
+    }
+  </header>
+
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms">
+    <mat-tab label="Expenses">
+      <ng-template matTabContent>
+        <app-expenses-panel [group]="current" />
+      </ng-template>
+    </mat-tab>
+    <!-- Lazy tab content is recreated on every visit, so balances are always fresh. -->
+    <mat-tab label="Balances">
+      <ng-template matTabContent>
+        <app-balances-panel [groupId]="current.id" />
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Members">
+      <ng-template matTabContent>
+        <app-members-panel [group]="current" (groupChange)="onGroupChanged($event)" />
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+}

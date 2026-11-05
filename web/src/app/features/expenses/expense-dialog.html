@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit expense' : 'Add expense' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <input matInput formControlName="description" maxlength="200" cdkFocusInitial />
+        @if (form.controls.description.invalid) {
+          <mat-error>Describe the expense.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Amount (R$)</mat-label>
+          <input
+            matInput
+            type="number"
+            inputmode="decimal"
+            min="0.01"
+            step="0.01"
+            formControlName="amount"
+          />
+          @if (form.controls.amount.hasError('required')) {
+            <mat-error>Amount is required.</mat-error>
+          } @else if (form.controls.amount.hasError('min')) {
+            <mat-error>Must be greater than zero.</mat-error>
+          } @else if (form.controls.amount.hasError('max')) {
+            <mat-error>Must be at most 1,000,000.</mat-error>
+          } @else if (form.controls.amount.hasError('decimals')) {
+            <mat-error>Use at most two decimal places.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Date</mat-label>
+          <input matInput type="date" formControlName="date" />
+          @if (form.controls.date.invalid) {
+            <mat-error>Date is required.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Paid by</mat-label>
+        <mat-select formControlName="paidByUserId">
+          @for (member of data.members; track member.id) {
+            <mat-option [value]="member.id">{{ member.name }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>Split equally among all {{ data.members.length }} members.</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit">{{ isEdit ? 'Save changes' : 'Add expense' }}</button>
+  </mat-dialog-actions>
+</form>

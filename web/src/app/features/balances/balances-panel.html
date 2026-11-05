@@ -1,0 +1,54 @@
+@if (balances.isLoading() && !balances.hasValue()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Loading balances" />
+} @else if (balances.error()) {
+  <p class="error" role="alert">{{ errorMessage(balances.error()) }}</p>
+  <button mat-button type="button" (click)="balances.reload()">Try again</button>
+} @else if (balances.hasValue()) {
+  <section>
+    <h2>Suggested payments</h2>
+    @if (settled()) {
+      <p class="settled-message">
+        <mat-icon aria-hidden="true">check_circle</mat-icon>
+        Everyone is settled up.
+      </p>
+    } @else {
+      <ul class="transfers">
+        @for (transfer of balances.value().suggestedTransfers; track $index) {
+          <li class="transfer">
+            <span class="person">{{ transfer.fromName }}</span>
+            <span class="arrow">
+              <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+              <span class="visually-hidden">pays</span>
+            </span>
+            <span class="person">{{ transfer.toName }}</span>
+            <span class="amount">{{ transfer.amount | currency: 'BRL' }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section>
+    <h2>Balances</h2>
+    <ul class="balances">
+      @for (balance of balances.value().balances; track balance.userId) {
+        <li class="balance" [class]="status(balance)">
+          <span class="person">{{ balance.name }}</span>
+          <span class="amount">
+            @switch (status(balance)) {
+              @case ('owed') {
+                gets back {{ balance.amount | currency: 'BRL' }}
+              }
+              @case ('owes') {
+                owes {{ abs(balance.amount) | currency: 'BRL' }}
+              }
+              @default {
+                settled
+              }
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+}

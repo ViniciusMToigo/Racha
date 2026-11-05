@@ -1,0 +1,52 @@
+<header class="page-header">
+  <h1>My groups</h1>
+  <p>Trips, houses, dinners: anything you split with other people.</p>
+</header>
+
+<mat-card appearance="outlined" class="create-card">
+  <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>New group name</mat-label>
+      <input matInput formControlName="name" maxlength="100" placeholder="e.g. Trip to Floripa" />
+      @if (newGroupName.touched && newGroupName.invalid) {
+        <mat-error>Give the group a name.</mat-error>
+      }
+      @if (createError(); as message) {
+        <mat-hint class="hint-error">{{ message }}</mat-hint>
+      }
+    </mat-form-field>
+    <button mat-flat-button type="submit" [disabled]="creating()">
+      <mat-icon>add</mat-icon>
+      Create group
+    </button>
+  </form>
+</mat-card>
+
+@if (groups.isLoading()) {
+  <mat-progress-bar mode="indeterminate" aria-label="Loading groups" />
+} @else if (groups.error()) {
+  <p class="state-message error" role="alert">{{ errorMessage(groups.error()) }}</p>
+  <button mat-button type="button" (click)="groups.reload()">Try again</button>
+} @else if (groups.hasValue()) {
+  @if (groups.value().length === 0) {
+    <div class="state-message">
+      <mat-icon aria-hidden="true">group_add</mat-icon>
+      <p>You're not in any group yet. Create one above to get started.</p>
+    </div>
+  } @else {
+    <ul class="group-list">
+      @for (group of groups.value(); track group.id) {
+        <li>
+          <a class="group-card" [routerLink]="['/groups', group.id]">
+            <mat-icon aria-hidden="true">group</mat-icon>
+            <span class="group-name">{{ group.name }}</span>
+            <span class="member-count">
+              {{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}
+            </span>
+            <mat-icon aria-hidden="true">chevron_right</mat-icon>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+}
