@@ -1,25 +1,30 @@
+using Racha.Application;
+using Racha.Infrastructure;
+using Racha.Web.Common;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddRachaWebApi(builder.Configuration, "Racha API");
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// This API owns the database schema: in Development it applies migrations (and seeds demo data) on startup.
+// The Auth API doesn't, so the two never race to migrate the same database.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    await app.Services.InitializeDatabaseAsync(
+        seedDemoData: app.Configuration.GetValue("Database:SeedDemoData", defaultValue: true));
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseRachaWebApi();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
+
+/// <summary>Exposed so integration tests can host the API with WebApplicationFactory&lt;Program&gt;.</summary>
+public partial class Program
+{
+}
