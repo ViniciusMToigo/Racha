@@ -12,6 +12,8 @@ How AI tools were used to build Racha, and where their output was validated, cor
 | 6 | Domain (red) | Theories with money values | `[InlineData(10.001m)]` | Decimals aren't valid attribute arguments; passed them as strings parsed with `InvariantCulture` (a pt-BR machine would otherwise parse "10.001" as ten thousand) |
 | 7 | Domain (green) | Re-split shares when an expense is edited | Clear the shares list and re-add | Reconciled shares in place instead, so EF Core sees updates rather than delete + insert of the same composite key |
 | 8 | Domain (green) | Split R$ 100 among 3 | Divide and round each share | Worked in whole cents and gave leftover cents to the lowest ids, so shares always add up exactly to the total |
+| 9 | Infrastructure | Pick a JWT library | `System.IdentityModel.Tokens.Jwt 8.x` | Switched to `Microsoft.IdentityModel.JsonWebTokens 7.1.2`: `JwtBearer 8.0.x` depends on IdentityModel 7.x, and mixing 7.x and 8.x compiles but breaks token validation at runtime |
+| 10 | Infrastructure | PBKDF2 iteration count | 100,000 (ASP.NET Identity default) | Raised to 600,000 following the current OWASP recommendation for PBKDF2-HMAC-SHA256, and capped the count read from stored hashes to avoid a denial-of-service vector |
 
 ## Prompting practices used
 
