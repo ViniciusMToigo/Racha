@@ -1,22 +1,25 @@
+using Microsoft.EntityFrameworkCore;
 using Racha.Application.Abstractions.Persistence;
 using Racha.Domain.Groups;
 
 namespace Racha.Infrastructure.Persistence.Repositories;
 
-// Red phase only: the dependencies are not used yet. Removed when the repository is implemented.
-#pragma warning disable CS9113 // Parameter is unread
+/// <summary>Groups are always loaded with their members: the domain rules (IsMember, AddMember) need them.</summary>
 public sealed class GroupRepository(RachaDbContext db) : IGroupRepository
 {
     public Task<Group?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        throw new NotImplementedException();
+        db.Groups
+            .Include(g => g.Members)
+            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
 
-    public Task<IReadOnlyList<Group>> GetForUserAsync(Guid userId, CancellationToken cancellationToken) =>
-        throw new NotImplementedException();
+    public async Task<IReadOnlyList<Group>> GetForUserAsync(Guid userId, CancellationToken cancellationToken) =>
+        await db.Groups
+            .Include(g => g.Members)
+            .Where(g => g.Members.Any(m => m.UserId == userId))
+            .OrderBy(g => g.Name)
+            .ToListAsync(cancellationToken);
 
-    public void Add(Group group) =>
-        throw new NotImplementedException();
+    public void Add(Group group) => db.Groups.Add(group);
 
-    public void Remove(Group group) =>
-        throw new NotImplementedException();
+    public void Remove(Group group) => db.Groups.Remove(group);
 }
-#pragma warning restore CS9113

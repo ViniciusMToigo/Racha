@@ -1,22 +1,25 @@
+using Microsoft.EntityFrameworkCore;
 using Racha.Application.Abstractions.Persistence;
 using Racha.Domain.Expenses;
 
 namespace Racha.Infrastructure.Persistence.Repositories;
 
-// Red phase only: the dependencies are not used yet. Removed when the repository is implemented.
-#pragma warning disable CS9113 // Parameter is unread
+/// <summary>Expenses are always loaded with their shares, since balances and updates depend on them.</summary>
 public sealed class ExpenseRepository(RachaDbContext db) : IExpenseRepository
 {
     public Task<Expense?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        throw new NotImplementedException();
+        db.Expenses
+            .Include(e => e.Shares)
+            .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
-    public Task<IReadOnlyList<Expense>> GetByGroupAsync(Guid groupId, CancellationToken cancellationToken) =>
-        throw new NotImplementedException();
+    public async Task<IReadOnlyList<Expense>> GetByGroupAsync(Guid groupId, CancellationToken cancellationToken) =>
+        await db.Expenses
+            .Include(e => e.Shares)
+            .Where(e => e.GroupId == groupId)
+            .OrderByDescending(e => e.Date)
+            .ToListAsync(cancellationToken);
 
-    public void Add(Expense expense) =>
-        throw new NotImplementedException();
+    public void Add(Expense expense) => db.Expenses.Add(expense);
 
-    public void Remove(Expense expense) =>
-        throw new NotImplementedException();
+    public void Remove(Expense expense) => db.Expenses.Remove(expense);
 }
-#pragma warning restore CS9113
