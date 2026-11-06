@@ -8,6 +8,14 @@ It was built as a technical exercise: a .NET 8 backend following **Clean Archite
 
 [![CI](https://github.com/ViniciusMToigo/Racha/actions/workflows/ci.yml/badge.svg)](https://github.com/ViniciusMToigo/Racha/actions/workflows/ci.yml)
 
+<p align="center">
+  <img src="docs/images/expenses-desktop.png" alt="Expenses of the Trip to Floripa group" width="68%">
+  <img src="docs/images/expenses-mobile.png" alt="The same screen on a phone" width="22%">
+</p>
+<p align="center">
+  <img src="docs/images/balances-desktop.png" alt="Balances and suggested payments" width="68%">
+</p>
+
 ---
 
 ## Contents
