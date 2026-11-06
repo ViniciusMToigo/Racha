@@ -6,7 +6,7 @@ Racha is a simplified Splitwise. People in a group (a trip, a shared flat) recor
 
 It was built as a technical exercise: a .NET 8 backend following **Clean Architecture** and **TDD**, two ASP.NET Core Web APIs, PostgreSQL and an **Angular** frontend.
 
-![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg) <!-- replace OWNER/REPO after pushing -->
+[![CI](https://github.com/ViniciusMToigo/Racha/actions/workflows/ci.yml/badge.svg)](https://github.com/ViniciusMToigo/Racha/actions/workflows/ci.yml)
 
 ---
 
