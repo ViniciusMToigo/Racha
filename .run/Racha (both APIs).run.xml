@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Racha (both APIs)" type="CompoundRunConfigurationType">
-    <toRun name="Racha.Api: http" type="LaunchSettings" />
-    <toRun name="Racha.Auth.Api: http" type="LaunchSettings" />
-    <method v="2" />
-  </configuration>
-</component>

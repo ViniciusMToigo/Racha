@@ -75,8 +75,6 @@ dotnet run --project src/Racha.Api        # Expenses API on http://localhost:508
 dotnet run --project src/Racha.Auth.Api   # Auth API     on http://localhost:5090
 ```
 
-In JetBrains Rider, the **"Racha (both APIs)"** run configuration (in `.run/`) starts both with one click.
-
 On startup in Development, **Racha.Api applies the EF Core migrations and seeds demo data**. Start it at least once before using the Auth API.
 
 ### 3. Run the frontend
