@@ -255,7 +255,7 @@ All errors use the [RFC 9457 ProblemDetails](https://www.rfc-editor.org/rfc/rfc9
 
 ```bash
 dotnet test                       # backend: 189 tests (Docker must be running)
-cd web && npm test                # frontend: 40 tests (watch mode)
+cd web && npm test                # frontend: 43 tests (watch mode)
 cd web && npm run test:ci         # frontend, single run
 ```
 
@@ -266,7 +266,7 @@ cd web && npm run test:ci         # frontend, single run
 | `Racha.Infrastructure.Tests` (33) | integration, **real PostgreSQL via Testcontainers** | mappings, repositories, cascades, unique e-mail, seeder; PBKDF2 and JWT unit tests |
 | `Racha.Auth.Api.Tests` (9) | end-to-end HTTP, `WebApplicationFactory` + Testcontainers | status codes, ProblemDetails, tokens |
 | `Racha.Api.Tests` (16) | end-to-end HTTP, `WebApplicationFactory` + Testcontainers | full CRUD lifecycle, access rules, balances |
-| `web` (40) | unit, Vitest | auth service, interceptor, guards, API clients, pages and dialogs |
+| `web` (43) | unit, Vitest | auth service, interceptor, guards, API clients, pages and dialogs |
 
 **TDD.** Every backend layer was written test-first. The git history shows each step as a `test:` commit (failing tests and stubs) followed by a `feat:` commit (implementation).
 

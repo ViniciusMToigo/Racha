@@ -413,13 +413,14 @@ Each row happened while building this project. "Caught by" is honest: some issue
 | 13 | API tests | `groups!.Select(...)` then `groups.Single(...)` | The `!` only applies to one expression; nullable warning → build error. | Apply `!` where the variable is assigned. | **Compiler on my machine** |
 | 14 | Frontend | `<form (ngSubmit)>` around a standalone `[formControl]` | `ngSubmit` only exists with a form directive. The button did a native submit and **reloaded the page**. "Create group", "Add member" and "Rename" did nothing. It compiled, every existing test passed and the screenshots looked right. | Wrapped the controls in a `FormGroup`; added 8 tests that click the real buttons and assert the HTTP call, and verified they fail with the old code. | **Me**, testing the UI by hand |
 | 15 | Frontend | Logout button using Material button tokens | Dark text on the blue toolbar (unreadable). | Toolbar theme tokens. | AI, from its own screenshots |
+| 16 | Frontend | After the expense dialog closed, anything other than `undefined` was treated as a request | The Cancel button closes with `''`. The empty string was POSTed as `text/plain` and the API answered **415 Unsupported Media Type**. | Only an object goes on; tests dismiss the dialog with `''` and `undefined` and assert no request, and fail with the old filter. | **Me**, testing the UI by hand |
 
 ---
 
 ## 4. Takeaways
 
-- **The AI is fast at producing plausible code, so plausibility is not a quality signal.** The most serious defects above (the BOLA hole, the runtime JWT version clash, the form that reloaded the page) all *compiled* and most passed the tests that existed at the time.
+- **The AI is fast at producing plausible code, so plausibility is not a quality signal.** The most serious defects above (the BOLA hole, the runtime JWT version clash, the form that reloaded the page, the cancelled dialog that still called the API) all *compiled* and most passed the tests that existed at the time.
 - **Tests written first are the best prompt.** When I reviewed the tests before the implementation existed, the AI had to meet my definition of correct.
 - **Constraints beat hopes.** Naming the failure modes in the prompt ("owner from the token, never from the request", "404 for other users' data") prevents them; a generic "make it secure" doesn't.
-- **Run it like a user.** The `ngSubmit` bug was invisible to the compiler, the unit tests and the screenshots; one manual click found it. Now a test covers it.
+- **Run it like a user.** The `ngSubmit` and the Cancel-button bugs were invisible to the compiler, the unit tests and the screenshots; a few manual clicks found both. Now tests cover them.
 - **I own the code.** Every decision here is one I can explain and defend, and I changed or rejected the AI's suggestion whenever I couldn't.

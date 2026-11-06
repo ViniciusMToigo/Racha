@@ -112,7 +112,10 @@ export class ExpensesPanel {
       .open<ExpenseDialog, ExpenseDialogData, ExpenseRequest>(ExpenseDialog, { data })
       .afterClosed()
       .pipe(
-        filter((request): request is ExpenseRequest => request !== undefined),
+        // Cancel closes with '' (mat-dialog-close has no value) and Escape with undefined: only a real request goes on.
+        filter(
+          (request): request is ExpenseRequest => typeof request === 'object' && request !== null,
+        ),
         switchMap(send),
       )
       .subscribe({
